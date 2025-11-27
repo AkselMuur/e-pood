@@ -1,3 +1,5 @@
+// 1.
+
 class Product {
   constructor(id, title, price, category) {
     this.id = id;
@@ -14,39 +16,27 @@ class Product {
   }
 }
 
-/*
-  displayProduct() {
-    console.log(`Product: ${this.name}`);
-    console.log(`Product: ${this.price.toFixed(2)}`);
-  }
-  calculateTotal(salesTax) {
-    return this.price + this.price * salesTax;
-  }
-}
-
-const salesTax = 0.05;
-const product1 = new Product("Shirt", 19.99);
-const product2 = new Product("Pants", 22.5);
-
-product2.displayProduct();
-
-const total = product2.calculateTotal(salesTax);
-console.log(`Total price (with tax): $${total.toFixed(2)}`);
-*/
-
 const laptop = new Product(1, "Sülearvuti", 999.99, "Elektroonika");
 
-console.log(laptop.describe());
+//console.log(laptop);
 
-console.log(Product.discountedPrice(laptop.price, 10)); // 10% allahindlus
+//console.log(laptop.describe());
+
+//console.log(Product.discountedPrice(laptop.price, 10));
+
+// 2.
 
 class Cart {
-  addProduct(Product, quantity) {
-    this.Product=Product;
-    this.quantity = quantity;
+  constructor() {
+    this.items = [];
+  }
+  addProduct(product, quantity) {
+    this.items.push({ product, quantity });
   }
 
-  removeProduct(productId) {}
+  removeProduct(productId) {
+    cart = cart.filter();
+  }
 
   calculateTotal() {
     return Product.price * Cart.quantity;
@@ -58,10 +48,13 @@ class Cart {
 const cart = new Cart();
 
 cart.addProduct(laptop, 2);
+cart.removeProduct(1);
 
-console.log(cart.calculateTotal()); // Kokku hind
+//console.log(cart.calculateTotal()); // Kokku hind
 
-console.log(cart.totalItems); // Kokku tooteid ostukorvis
+//console.log(cart.totalItems); // Kokku tooteid ostukorvis
 
-console.log(cart.quantity);
+//console.log(cart.quantity);
 console.log(cart);
+
+//ES6 MODULE bro code video
