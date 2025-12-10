@@ -1,79 +1,37 @@
-// 1.
+import { Product } from "./constructors/product.js";
 
-class Product {
-  constructor(id, title, price, category) {
-    this.id = id;
-    this.title = title;
-    this.price = price;
-    this.category = category;
-  }
+import { Cart } from "./constructors/cart.js";
 
-  describe() {
-    return this.title + ", " + this.price + "€, " + this.category;
-  }
-  static discountedPrice(price, discount) {
-    return (price - price * (discount / 100)).toFixed(2);
-  }
-}
+import { Order } from "./constructors/order.js";
+
+import { Customer } from "./constructors/customer.js";
+
+// Loo mõned tooted
 
 const laptop = new Product(1, "Sülearvuti", 999.99, "Elektroonika");
 
-//console.log(laptop);
+const phone = new Product(2, "Telefon", 599.99, "Elektroonika");
 
-//console.log(laptop.describe());
-
-//console.log(Product.discountedPrice(laptop.price, 10));
-
-// 2.
-
-class Cart {
-  constructor() {
-    this.items = [];
-  }
-  addProduct(product, quantity) {
-    const existingItem = this.items.find(
-      (item) => item.product.title === product.title
-    );
-    if (existingItem) {
-      existingItem.quantity += quantity;
-    } else {
-      this.items.push({ product, quantity });
-    }
-  }
-
-  removeProduct(productId) {
-    const existingItem = this.items.find(
-      (item) => item.product.id === productId
-    );
-
-    if (existingItem) {
-      existingItem.quantity -= 1;
-      if (existingItem.quantity <= 0) {
-        this.items = this.items.filter((item) => item.product.id !== productId);
-      }
-    }
-  }
-
-  calculateTotal() {
-    return this.items.reduce((sum, item) => {
-      return (sum + item.product.price * item.quantity).toFixed(2);
-    }, 0);
-  }
-
-  get totalItems() {
-    return this.items.reduce((count, item) => count + item.quantity, 0);
-  }
-}
+// Loo ostukorv ja lisa tooted
 
 const cart = new Cart();
 
-cart.addProduct(laptop, 2);
-cart.addProduct(laptop, 2);
-cart.removeProduct(1);
+cart.addProduct(laptop, 1);
 
-console.log(cart.calculateTotal());
-console.log(cart.totalItems);
+cart.addProduct(phone, 2);
 
-// 3.
+// Kuvage ostukorvi summa ja toodete arv
 
-//ES6 MODULE bro code video
+console.log("Kogusumma:", cart.calculateTotal());
+
+console.log("Kokku tooteid ostukorvis:", cart.totalItems);
+
+// Loo klient ja esita tellimus
+
+const customer = new Customer("Alice");
+
+customer.placeOrder(cart);
+
+// Kuvage tellimuste ajalugu
+
+customer.printOrderHistory();
