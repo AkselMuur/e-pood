@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "name": "Sülearvuti",
+    "price": 999.99,
+    "category": "Elektroonika"
+  },
+  {
+    "id": 2,
+    "name": "Telefon",
+    "price": 599.99,
+    "category": "Elektroonika"
+  },
+  {
+    "id": 3,
+    "name": "Hiir",
+    "price": 19.99,
+    "category": "Elektroonika"
+  },
+  {
+    "id": 4,
+    "name": "Vorst",
+    "price": 5.62,
+    "category": "Toiduained"
+  },
+  {
+    "id": 5,
+    "name": "Püksid",
+    "price": 59.99,
+    "category": "Riided"
+  }
+]
