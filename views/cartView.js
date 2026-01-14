@@ -1,6 +1,5 @@
-import { cartConstructor } from ".constructors/cart.js";
+import { cartConstructor } from "../constructors/cart.js";
 
-//Ostukorvi vaate genereerimine
 export const displayCartView = () => {
   const container = document.getElementById("cart-view");
   container.innerHTML = "<h2>Ostukorv</h2>";
@@ -15,13 +14,13 @@ export const displayCartView = () => {
     cart.forEach((item) => {
       const cartItemElement = document.createElement("div");
       cartItemElement.classList.add("cart-item");
-      cartItemElement.innerHTML = `
-      <h3>${item.product.name}</h3>
-      <p>Hind: $${item.product.price}</p>
-      <p>Kogus: ${item.quantity}</p>
-    `;
 
-      // Eemaldamisnupp
+      cartItemElement.innerHTML = `
+        <h3>${item.product.title}</h3>
+        <p>Hind: $${item.product.price}</p>
+        <p>Kogus: ${item.quantity}</p>
+      `;
+
       const removeButton = document.createElement("button");
       removeButton.textContent = "Eemalda";
 

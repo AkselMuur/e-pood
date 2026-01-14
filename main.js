@@ -1,6 +1,6 @@
 import { Product } from "./constructors/product.js";
 
-import { Cart } from "./constructors/cart.js";
+import { cartConstructor } from "./constructors/cart.js";
 
 import { Order } from "./constructors/order.js";
 
@@ -15,7 +15,7 @@ const phone = new Product(2, "Telefon", 599.99, "Elektroonika");
 
 // Loo ostukorv ja lisa tooted
 
-const cart = new Cart();
+const cart = cartConstructor;
 
 cart.addProduct(laptop, 1);
 
@@ -39,3 +39,9 @@ const customer = new Customer("Alice");
 
 getData();
 getData2();
+
+import { navigate } from "./router.js";
+
+document.addEventListener("DOMContentLoaded", () => {
+  navigate("category"); // või "products"
+});

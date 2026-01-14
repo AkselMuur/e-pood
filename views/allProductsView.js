@@ -10,10 +10,10 @@ export const displayAllProductsView = (products) => {
     const productCard = document.createElement("div");
     productCard.classList.add("product");
     productCard.innerHTML = `
-        <h3>${product.name}</h3>
+        <h3>${product.title}</h3>
         <p>Kategooria: ${product.category}</p>
         <p>Hind: $${product.price}</p>
-        <button id="favorites">Lisa lemmikutesse</button>
+        <button class="favorites">Lisa lemmikutesse</button>
       `;
 
     //NB!! Kaks viis nuppude lisamiseks

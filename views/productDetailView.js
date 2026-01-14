@@ -1,4 +1,4 @@
-export const dispalyProductDetailView = (product) => {
+export const displayProductDetailView = (product) => {
   const container = document.getElementById("detailed-view");
   container.innerHTML = "";
 
@@ -6,9 +6,11 @@ export const dispalyProductDetailView = (product) => {
   productCard.classList.add("product");
 
   productCard.innerHTML = `
-      <h2>${product.name}</h2>
+      <h2>${product.title}</h2>
+      <img src="${product.image}" alt="${product.title}" width="150">
       <p>Kategooria: ${product.category}</p>
       <p>Hind: $${product.price}</p>
+      <p>${product.description}</p>
       <p>ID: ${product.id}</p>
     `;
 

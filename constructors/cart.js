@@ -4,7 +4,7 @@ class Cart {
   }
   addProduct(product, quantity) {
     const existingItem = this.items.find(
-      (item) => item.product.title === product.title
+      (item) => item.product.id === product.id
     );
     if (existingItem) {
       existingItem.quantity += quantity;
@@ -12,12 +12,10 @@ class Cart {
       this.items.push({ product, quantity });
     }
   }
-
   removeProduct(productId) {
     const existingItem = this.items.find(
       (item) => item.product.id === productId
     );
-
     if (existingItem) {
       existingItem.quantity -= 1;
       if (existingItem.quantity <= 0) {
@@ -25,17 +23,17 @@ class Cart {
       }
     }
   }
-
-  calculateTotal() {
-    const total = this.items.reduce((sum, item) => {
-      return sum + item.product.price * item.quantity;
-    }, 0);
-    return total.toFixed(2);
+  getAllProducts() {
+    return this.items;
   }
-
+  calculateTotal() {
+    return this.items.reduce(
+      (sum, item) => sum + item.product.price * item.quantity,
+      0
+    );
+  }
   get totalItems() {
     return this.items.reduce((count, item) => count + item.quantity, 0);
   }
 }
-
-export { Cart };
+export const cartConstructor = new Cart();
