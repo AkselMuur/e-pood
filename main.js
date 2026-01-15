@@ -42,6 +42,10 @@ getData2();
 
 import { navigate } from "./router.js";
 
+document.addEventListener("DOMContentLoaded", () => { navigate("products"); });
+
+/*
 document.addEventListener("DOMContentLoaded", () => {
-  navigate("category"); // või "products"
+  navigate("category"); 
 });
+*/

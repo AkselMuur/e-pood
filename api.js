@@ -1,5 +1,10 @@
 import { Product } from "./constructors/product.js";
 
+import { navigate } from "./router.js";
+document.getElementById("cart-button").addEventListener("click", () => {
+  navigate("cart");
+});
+
 //Aksli versioon
 export async function getData() {
   try {
@@ -7,7 +12,7 @@ export async function getData() {
 
     let data = await response.json();
 
-    console.log(data);
+    // console.log(data);
   } catch (error) {
     console.log("Error", error);
   }
@@ -22,10 +27,9 @@ export const getData2 = async () => {
       (product) =>
         new Product(product.id, product.name, product.price, product.category)
     );
-    console.log(constructedData);
+    //  console.log(constructedData);
     return constructedData;
   } catch (error) {
     console.log(error);
   }
 };
-

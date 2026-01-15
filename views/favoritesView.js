@@ -1,8 +1,8 @@
-import { customerConstructor } from "./constructors/customer.js";
+import { Customer } from "../constructors/customer.js";
 
 // Lemmikute vaate genereerimine
 export const displayFavoritesView = () => {
-  const favorites = customerConstructor.getAllFavorites();
+  const favorites = Customer.getAllFavorites();
 
   const container = document.getElementById("favorite-view");
   container.innerHTML = "<h2>Lemmikud</h2>";
