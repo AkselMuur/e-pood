@@ -33,7 +33,6 @@ export const getData2 = async () => {
   }
 };
 
-
 export function updateCartCount() {
   const countElement = document.getElementById("cart-count");
   if (!countElement) return;
@@ -42,10 +41,9 @@ export function updateCartCount() {
   countElement.textContent = total > 0 ? `(${total})` : "";
 }
 
-
 updateCartCount();
-
 
 cartConstructor.onChange(() => {
   updateCartCount();
 });
+

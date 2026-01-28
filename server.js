@@ -6,77 +6,122 @@ const path = require("path");
 const app = express();
 const PORT = 8000;
 
-// Funktsioon: Laadi andmed FakeStore API-st ja salvesta faili
+// Serveeri staatilised failid
+app.use(express.static(__dirname));
+
+// Fail, kuhu tooted salvestatakse
+const productsFile = "./data/products.json";
+
+// Lae FakeStore API andmed ja salvesta faili
 const fetchAndSaveProducts = async () => {
   const response = await axios.get("https://fakestoreapi.com/products");
   const products = response.data;
-  await fs.writeFile("./data/products.json", JSON.stringify(products, null, 2));
+  await fs.writeFile(productsFile, JSON.stringify(products, null, 2));
 };
 
-// Funktsioon: Kontrolli, kas fail on tühi
+// Kontrolli, kas fail on tühi
 const isFileEmpty = async (path) => {
   try {
     const rawData = await fs.readFile(path, "utf-8");
-    return !rawData.trim(); // Kontrollime, kas fail on tühi (või ainult tühikud)
-  } catch (error) {
-    console.error("Viga faili lugemisel", error);
-    return true; // Kui tekib viga, eeldame, et fail on tühi või puudub
+    return !rawData.trim();
+  } catch {
+    return true;
   }
 };
 
-// API: Tagasta lokaalsest JSON-failist andmed
-app.get("/products", async (req, res) => {
+// ---------------- API ROUTES ---------------- //
+
+// Kõik tooted
+app.get("/api/products", async (req, res) => {
   try {
-    const filePath = "./data/products.json";
+    const empty = await isFileEmpty(productsFile);
+    if (empty) await fetchAndSaveProducts();
 
-    // Kontrolli, kas fail on tühi
-    const emptyFile = await isFileEmpty(filePath);
+    const raw = await fs.readFile(productsFile, "utf-8");
+    const products = JSON.parse(raw);
 
-    // Kui fail on tühi, lae andmed API-st ja salvesta need
-    if (emptyFile) {
-      console.log("Fail on tühi. Laadin andmed FakeStore API-st...");
-      await fetchAndSaveProducts();
-    }
-
-    // Loe andmed failist
-    const rawData = await fs.readFile(filePath, "utf-8");
-
-    // Parssige andmed
-    const products = JSON.parse(rawData);
-
-    // Seadista vastuse päised
-    res.setHeader("Content-Type", "application/json");
-    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-
-    // Tagasta andmed kasutajale
-    res.status(200).json(products);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Andmete lugemine ebaõnnestus" });
+    res.json(products);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Toodete lugemine ebaõnnestus" });
   }
 });
 
-// API: Käsitsi andmete uuesti laadimine ja faili salvestamine
-app.get("/fetch-products", async (req, res) => {
+// Üks toode ID järgi
+app.get("/api/products/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+
+    const raw = await fs.readFile(productsFile, "utf-8");
+    const products = JSON.parse(raw);
+
+    const product = products.find((p) => p.id === id);
+
+    if (!product) return res.status(404).json({ error: "Toodet ei leitud" });
+
+    res.json(product);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Toote lugemine ebaõnnestus" });
+  }
+});
+
+// Kategooriate loend
+app.get("/api/categories", async (req, res) => {
+  try {
+    const raw = await fs.readFile(productsFile, "utf-8");
+    const products = JSON.parse(raw);
+
+    const categories = [...new Set(products.map((p) => p.category))];
+
+    res.json(categories);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Kategooriate lugemine ebaõnnestus" });
+  }
+});
+
+// Tooted kategooria järgi
+app.get("/api/products/category/:name", async (req, res) => {
+  try {
+    const category = decodeURIComponent(req.params.name).toLowerCase();
+
+    const raw = await fs.readFile(productsFile, "utf-8");
+    const products = JSON.parse(raw);
+
+    const filtered = products.filter(
+      (p) => p.category.toLowerCase() === category,
+    );
+
+    res.json(filtered);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Kategooria toodete lugemine ebaõnnestus" });
+  }
+});
+
+// Käsitsi uuesti laadimine
+app.get("/api/fetch-products", async (req, res) => {
   try {
     await fetchAndSaveProducts();
-    res.status(200).json({ message: "Andmed salvestatud products.json faili" });
-  } catch (error) {
-    console.error(error);
+    res.json({ message: "Andmed uuendatud" });
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ error: "Andmete laadimine ebaõnnestus" });
   }
 });
 
-fetchAndSaveProducts();
+// ---------------- SPA ROUTES ---------------- //
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-app.get("/about", (req, res) => {
-  res.sendFile(path.join(__dirname, "about.html"));
+// SPA fallback – kõik tundmatud teed saadavad index.html
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
-app.use(express.static(__dirname));
+// ---------------- START SERVER ---------------- //
 
-app.listen(8000, () => console.log("Server is running on port 8000"));
+app.listen(PORT, () => console.log(`Server töötab: http://localhost:${PORT}`));

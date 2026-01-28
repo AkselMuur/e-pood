@@ -1,59 +1,81 @@
 import { navigate } from "../router.js";
 import { cartConstructor } from "../constructors/cart.js";
 
-export const displayAllProductsView = async () => {
-  const container = document.getElementById("main-container");
+console.log("CATEGORY VIEW KÄIVITUS:", categoryName);
 
-  // Puhasta vaade
+export const displayCategoryView = async (categoryName) => {
+  const container = document.getElementById("main-container");
   container.innerHTML = "";
 
-  // Pealkiri
+  // --- Pealkiri ---
   const title = document.createElement("h2");
-  title.id = "products-title";
-  title.textContent = "Kõik tooted";
+  title.textContent = `Kategooria: ${categoryName}`;
   container.appendChild(title);
 
-  // Lae tooted failist
-  const response = await fetch("/data/products.json");
-  const products = await response.json();
-
-  // --- Kategooriate riba ---
+  // --- Kategooriate riba (täpselt nagu AllProductsView-s) ---
   const categoryBar = document.createElement("div");
   categoryBar.classList.add("category-bar");
+  container.appendChild(categoryBar);
+  console.log("CATEGORY BAR LISATUD DOM-I");
+  console.log("categoryBar:", categoryBar);
+  console.log("container:", container);
+
+  // Lae kõik tooted, et saada kategooriad
+  let allProducts = [];
+  try {
+    const res = await fetch("/data/products.json");
+    allProducts = await res.json();
+  } catch (err) {
+    console.error("Ei saanud laadida products.json", err);
+  }
+
+  const categories = [...new Set(allProducts.map((p) => p.category))];
 
   // "Kõik" nupp
   const allBtn = document.createElement("button");
   allBtn.textContent = "Kõik";
-  allBtn.addEventListener("click", () => {
-    navigate("products");
-  });
+  allBtn.addEventListener("click", () => navigate("products"));
   categoryBar.appendChild(allBtn);
-
-  // Leia kategooriad
-  const categories = [...new Set(products.map((p) => p.category))];
 
   // Kategooria nupud
   categories.forEach((cat) => {
     const btn = document.createElement("button");
     btn.textContent = cat;
 
-    btn.addEventListener("click", () => {
-      navigate("category", cat); // ⭐ oluline!
-    });
+    // märgi aktiivne kategooria
+    if (cat === categoryName) {
+      btn.classList.add("active-category");
+    }
+
+    btn.addEventListener("click", () => navigate("category", cat));
 
     categoryBar.appendChild(btn);
   });
-
-  container.appendChild(categoryBar);
 
   // --- Toodete konteiner ---
   const productsContainer = document.createElement("div");
   productsContainer.classList.add("products-container");
   container.appendChild(productsContainer);
 
-  // --- Renderda kõik tooted ---
-  renderProducts(products);
+  // --- Lae kategooria tooted backendist ---
+  try {
+    const response = await fetch(
+      `/api/products/category/${encodeURIComponent(categoryName)}`,
+    );
+    const products = await response.json();
 
+    if (!products.length) {
+      productsContainer.innerHTML = `<p>Selles kategoorias pole tooteid.</p>`;
+      return;
+    }
+
+    renderProducts(products);
+  } catch (error) {
+    productsContainer.innerHTML = `<p>Viga toodete laadimisel.</p>`;
+    console.error("Category view error:", error);
+  }
+
+  // --- Render funktsioon ---
   function renderProducts(list) {
     productsContainer.innerHTML = "";
 
@@ -69,9 +91,7 @@ export const displayAllProductsView = async () => {
       `;
 
       // Ava detailvaade
-      card.addEventListener("click", () => {
-        navigate("product", product.id);
-      });
+      card.addEventListener("click", () => navigate("product", product.id));
 
       // --- Lemmikute nupp ---
       const favBtn = document.createElement("button");
