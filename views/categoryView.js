@@ -1,9 +1,8 @@
 import { navigate } from "../router.js";
 import { cartConstructor } from "../constructors/cart.js";
 
-console.log("CATEGORY VIEW KÄIVITUS:", categoryName);
-
 export const displayCategoryView = async (categoryName) => {
+  console.log("CATEGORY VIEW KÄIVITUS:", categoryName);
   const container = document.getElementById("main-container");
   container.innerHTML = "";
 
