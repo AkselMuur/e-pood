@@ -13,7 +13,7 @@ export const navigate = (view, param) => {
     products: () => displayAllProductsView(),
     product: () => displayProductDetailView(param),
     cart: () => displayCartView(),
-    favourites: () => displayFavoritesView(),
+    favorites: () => displayFavoritesView(),
   };
 
   if (views[view]) {

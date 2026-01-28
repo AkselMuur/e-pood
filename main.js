@@ -7,6 +7,7 @@ import { Order } from "./constructors/order.js";
 import { Customer } from "./constructors/customer.js";
 
 import { getData, getData2 } from "./api.js";
+
 // Loo mõned tooted
 
 const laptop = new Product(1, "Sülearvuti", 999.99, "Elektroonika");
@@ -15,11 +16,11 @@ const phone = new Product(2, "Telefon", 599.99, "Elektroonika");
 
 // Loo ostukorv ja lisa tooted
 
-const cart = cartConstructor;
+//const cart = cartConstructor;
 
-cart.addProduct(laptop, 1);
+//cart.addProduct(laptop, 1);
 
-cart.addProduct(phone, 2);
+//cart.addProduct(phone, 2);
 
 // Kuvage ostukorvi summa ja toodete arv
 
@@ -37,12 +38,17 @@ const customer = new Customer("Alice");
 
 //customer.printOrderHistory();
 
-getData();
-getData2();
+//getData();
+//getData2();
 
 import { navigate } from "./router.js";
 
-document.addEventListener("DOMContentLoaded", () => { navigate("products"); });
+document.addEventListener("DOMContentLoaded", () => {
+  navigate("products");
+});
+document.getElementById("favorites-button").addEventListener("click", () => {
+  navigate("favorites");
+});
 
 /*
 document.addEventListener("DOMContentLoaded", () => {

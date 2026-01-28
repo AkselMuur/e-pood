@@ -45,3 +45,9 @@ main section {
   width: 280px;
   margin: 0 auto;
 }
+
+.favorites.active {
+  background-color: gold;
+  color: black;
+  border: 1px solid #b8860b;
+}

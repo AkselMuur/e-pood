@@ -1,5 +1,6 @@
 import { cartConstructor } from "../constructors/cart.js";
 import { navigate } from "../router.js";
+import { updateCartCount } from "../api.js";
 
 export const displayProductDetailView = async (id) => {
   const container = document.getElementById("detailed-view");
@@ -14,6 +15,29 @@ export const displayProductDetailView = async (id) => {
     return;
   }
 
+  
+  const favorites = {
+    get() {
+      return JSON.parse(localStorage.getItem("favorites")) || [];
+    },
+    save(list) {
+      localStorage.setItem("favorites", JSON.stringify(list));
+    },
+    toggle(id) {
+      const list = this.get();
+      const index = list.indexOf(id);
+
+      if (index === -1) list.push(id);
+      else list.splice(index, 1);
+
+      this.save(list);
+    },
+    isFavorite(id) {
+      return this.get().includes(id);
+    },
+  };
+
+
   const productCard = document.createElement("div");
   productCard.classList.add("product");
   container.innerHTML = `<h1>${product.title}</h1>`;
@@ -25,14 +49,35 @@ export const displayProductDetailView = async (id) => {
       <p>Hind: $${product.price}</p>
       <p>${product.description}</p>
       <p>ID: ${product.id}</p>
-      <button class="favorites">Lisa lemmikutesse</button>
-     <button id="cart-nav">Lisa ostukorvi</button>
+      <button id="fav-btn" class="favorites"></button>
+      <button id="cart-nav">Lisa ostukorvi</button>
     `;
 
   container.append(productCard);
 
-  document.getElementById("cart-button").addEventListener("click", () => {
+  
+  const favBtn = document.getElementById("fav-btn");
+
+  const updateFavButton = () => {
+    if (favorites.isFavorite(product.id)) {
+      favBtn.textContent = "Eemalda lemmikutest";
+      favBtn.classList.add("active");
+    } else {
+      favBtn.textContent = "Lisa lemmikutesse";
+      favBtn.classList.remove("active");
+    }
+  };
+
+  updateFavButton();
+
+  favBtn.addEventListener("click", () => {
+    favorites.toggle(product.id);
+    updateFavButton();
+  });
+ 
+  document.getElementById("cart-nav").addEventListener("click", () => {
     cartConstructor.addProduct(product);
-    navigate("cart");
+    updateCartCount(); 
+   
   });
 };
